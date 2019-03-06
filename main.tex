@@ -174,8 +174,11 @@
 \begin{frame}
   \frametitle{PILCO Algorithm}
   \begin{itemize}
-  \item Gaussian processes for data efficient learning in robotics and control\\
-        (Marc Deisenroth, Dieter Fox, Carl Edward Rasmussen 2015)
+  \item 
+  M. Deisenroth and C. Rasmussen, \\
+  “PILCO: A model-based and data-efficient approach to policy search”,ICML-2011\\
+  M. Deisenroth, D. Fox, and C. Rasmussen,\\
+  “Gaussian processes for data-efficient learning in robotics and control", PAMI-2015
   \item PILCO (Probabilistic Inference for Learning COntrol)
   \item A model based policy search method, considering the model uncertainty while learning models. PILCO Uses Gaussian processes as a probabilistic model.
   \end{itemize}
@@ -239,12 +242,97 @@ $$J(\theta)=\sum_{t=1}^{T} \mathbb{E} [c(x_t)|\theta]=\sum_{t=1}^{T} \int c(x_t)
 
 \subsection{Experimental results}
 \begin{center}
+Learning to Control a Low-Cost Manipulator\\
+    \href{https://www.youtube.com/watch?v=gdT6dwUOYC0}{\includegraphics[height=7cm]{img/arm-p.png}}
+\end{center}
+
+\subsection{Experimental results}
+\begin{center}
 Learning to Control a Low-Cost Manipulator
-    \href{https://www.youtube.com/watch?v=gdT6dwUOYC0}{\includegraphics{img/arm.png}}
+    \includegraphics[height=6.5cm]{img/curve-arm.png}
 \end{center}
 
 \section{Deep PILCO}
 \subsection{PILCO problems}
+\begin{frame}{PILCO algorithm}
+\includegraphics[height=7cm]{img/pilco-algo.png}
+\end{frame}
+\begin{frame}{PILCO problems}
+    \begin{itemize}
+        \item PILCO relies on Gaussian processes, which work extremely will with small amount of low dimentional data, but \textbf{scale cubically} with the number of trials, so PILCO is hard to scale to high dimensional observation spaces.
+        \item PILCO doesn't consider temporal correclation between successive state transitions. This means that PILCO \textbf{underestimates state uncertainty at future time steps.} which can lead to diminished performance.
+    \end{itemize}
+\end{frame}
+\begin{frame}{Deep PILCO}
+    \begin{itemize}
+        \item Deep PILCO (Improving  PILCO  with  Bayesian  Neural  Network  Dynamics  Models)\\
+        (Yarin Gal and Rowan Thomas McAllister and Carl Edward Rasmussen - 2016)
+        \item DeepPILCO : \\
+        Gaussian processes $\rightarrow$ Bayesian deep dynamic model
+    \end{itemize}
+\end{frame}
+\begin{frame}{Deep PILCO idea}
+\begin{itemize}
+    \item Deep PILCO uses deep neural network capable of scaling to high dimensional observation spaces.
+    \item The dynamic model that rely on DNN should maintain the probabilistic nature of the GP, capturing :
+    \begin{enumerate}
+        \item Output uncertainty
+        \item Input uncertainty
+    \end{enumerate}
+\end{itemize}
+\end{frame}
+\begin{frame}{1. Output uncertainty solution}
+\begin{itemize}
+    \item Simple NN models cannot express output model uncertainty.
+    \item Using Bayesian probabilistic equivalent to the NN -\\ the \textbf{Bayesian neural network (BNN)}
+    \item Represent the model uncertainty with an \textbf{approximate} posterior distribution over the weights of the BNN.
+    \item \textbf{Dropout} can be interpreted as a variational Bayesian approximation. and can be used to approximate posterior distribution.
+    \item Uncertainty in weights induces prediction uncertainty.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{1. Output uncertainty solution - Dropout}
+    \begin{center}
+        \includegraphics[height=6.5cm]{img/dropout.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}{2. Input uncertainty solution}
+    \item Handle input uncertainty = plan under dynamic uncertainty.\\
+          Predict system trajectories from $p(x_0)$ to $p(x_T)$
+    \item PILCO propagates state distributions through the dynamic model (GP) analytically, which cannot be done with NNs.
+    \item The solution for this problem was using \textbf{particle methods}.
+    \items moment matching the output distribution at each time step, is used to forcing unimodal fit, where the algorithm penalizes policies that cause the predictive state to bifurcate.
+\end{frame}
+
+\begin{frame}{2. Input uncertainty solution - Particle method}
+\begin{center}
+    \includegraphics[width=\textwidth]{img/particles.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{PILCO algorithm}
+    \includegraphics[height=7cm]{img/pilco-algo.png}
+\end{frame}
+
+\begin{frame}{DeepPILCO modification}
+    \includegraphics[height=7cm]{img/deep-algo.png}
+\end{frame}
+
+\begin{frame}{DeepPILCO results on cartpole}
+    \begin{center}
+        \includegraphics[height=6.5cm]{img/deep-curve.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Results continued}
+\begin{itemize}
+    \item DeepPILCO as a Bayesian approach to data efficient deep RL.
+    \item Comparing DeepPILCO to DDPG and NAF (Normalized Advantage Functions)
+\end{itemize}
+    
+    \includegraphics[width=\textwidth]{img/compare-deep.png}
+\end{frame}
 \begin{frame}
   \Huge{\centerline{Thanks!}}
 \end{frame}
