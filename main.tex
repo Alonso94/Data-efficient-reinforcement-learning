@@ -298,11 +298,13 @@ Learning to Control a Low-Cost Manipulator
 \end{frame}
 
 \begin{frame}{2. Input uncertainty solution}
+\begin{itemize}
     \item Handle input uncertainty = plan under dynamic uncertainty.\\
           Predict system trajectories from $p(x_0)$ to $p(x_T)$
     \item PILCO propagates state distributions through the dynamic model (GP) analytically, which cannot be done with NNs.
     \item The solution for this problem was using \textbf{particle methods}.
-    \items moment matching the output distribution at each time step, is used to forcing unimodal fit, where the algorithm penalizes policies that cause the predictive state to bifurcate.
+    \items Moment matching the output distribution at each time step, is used to forcing unimodal fit, where the algorithm penalizes policies that cause the predictive state to bifurcate.
+\end{itemize}
 \end{frame}
 
 \begin{frame}{2. Input uncertainty solution - Particle method}
